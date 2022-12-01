@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="4d0ac4d6-8828-48f7-aa96-12175f35988e" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<jms:config name="JMS_Config" doc:name="JMS Config" doc:id="77aa5709-fb27-4cfe-b67a-f21aef8a3370" >
+		<jms:active-mq-connection >
+			<jms:factory-configuration brokerUrl="tcp://localhost:61616" />
+		</jms:active-mq-connection>
+	</jms:config>
+	<flow name="jms_connectorFlow" doc:id="299bb200-b2b8-4f54-8572-f6ac5d147327" >
+		<http:listener doc:name="Listener" doc:id="55947921-c527-4564-b974-51cd271b9cbb" config-ref="HTTP_Listener_config" path="/jmspublish"/>
+		<ee:transform doc:name="Transform Message" doc:id="d9d60ec8-746c-4a39-b548-29b268f6b4a2" >
+			<ee:message >
+				<ee:set-payload ><![CDATA["Welcome to Silverline"]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<jms:publish doc:name="Publish" doc:id="b02803e9-eb28-49c5-bf8f-3a6aaf35dd8d" config-ref="JMS_Config" destination="INQ"/>
+		<logger level="INFO" doc:name="Logger" doc:id="13d278ed-c3cc-4060-a25b-c034e41379e4" message="#[payload]"/>
+	</flow>
+	<flow name="jms_connectorFlow2" doc:id="ba9e328c-8f71-48d3-a719-79d233ddccc4" >
+		<http:listener doc:name="Listener" doc:id="57e66b75-d7d6-4e1b-b093-7dfe3f5c205a" config-ref="HTTP_Listener_config" path="/pubconsume"/>
+		<jms:publish-consume doc:name="Publish consume" doc:id="33bc17b2-b69c-4995-b49b-394861a2b918" config-ref="JMS_Config" destination="INQ">
+			<jms:message >
+				<jms:reply-to destination="myreply" />
+			</jms:message>
+		</jms:publish-consume>
+		<logger level="INFO" doc:name="Logger" doc:id="8932f07c-8e85-452f-8323-c05974344db5" message="#[payload]"/>
+	</flow>
+	<flow name="jms_connectorFlow1" doc:id="8f5ef45a-a3b0-47c9-9bc8-6bc28ef8c6ac" >
+		<jms:listener doc:name="On New Message" doc:id="9ed22eaf-70e7-4ebd-a8f2-fa84ac8358e5" config-ref="JMS_Config" destination="INQ" numberOfConsumers="7">
+			<jms:consumer-type >
+				<jms:queue-consumer />
+			</jms:consumer-type>
+		</jms:listener>
+		<logger level="INFO" doc:name="Logger" doc:id="93dbaf24-9288-4019-ae87-1a36631b2c77" message='#["Received :" ++ " " ++ payload]'/>
+	</flow>
+</mule>

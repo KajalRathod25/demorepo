@@ -1,0 +1,22 @@
+ [
+    {
+      "empId": 10001,
+      "empName":"Kajal",
+      "designation":"Associate devloper"
+    },
+    {
+      "empId": 10002,
+      "empName":"Kavya",
+      "designation":"Associate devloper"
+    },
+    {
+      "empId": 10003,
+      "empName":"Mrunali",
+      "designation":"Devloper"
+    },
+    {
+      "empId": 10004,
+      "empName":"Pallavi",
+      "designation":" Senior Devloper"
+    }
+]

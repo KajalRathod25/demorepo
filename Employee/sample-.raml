@@ -1,0 +1,55 @@
+#%RAML 1.0
+title: sample 
+version: v1
+protocols:
+- HTTP
+- HTTPS
+
+uses:
+  emplib:  /exchange_modules/34119f7c-7ce5-4841-875c-985b98c022e8/employeedetails/1.0.0/employeedetails.raml
+  empDetails: resourceType/emplibrary.raml
+  
+traits:
+  erroereponse: !include trait/errorresponse.raml  
+
+/employees:
+  type:
+    {empDetails.empCollection: {examplerefrence1: !include /examples/employee_response.json, examplerefrence2: !include /examples/post_requestBody.json, examplerefrence3: !include /examples/post_employee_response.json}}
+  get:
+    is: [erroereponse]
+    description: Get details of employee
+    queryParameters:
+      designation:
+        type: string
+        maxLength: 30
+        minLength: 3
+        required: true
+        
+    responses:     
+      400:
+        body:
+          application/json:
+            example: !include examples/error_response/400.json
+              
+  post:
+                        
+
+  /{empId}:
+    get:
+      description: get the employee details by empId
+      responses:
+        200:
+          body:
+            application/json:
+              type:  emplib.employees
+              example: !include /examples/employee_ResondebyID.json   
+
+
+
+  
+    
+              
+                          
+
+      
+    

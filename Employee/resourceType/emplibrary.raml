@@ -1,0 +1,32 @@
+#%RAML 1.0 Library
+resourceTypes:
+  empCollection:
+    get?:
+      description: This is used to fetch the all <<resourcePathName>>
+      responses:
+        200:
+          body:
+            application/json:
+              example: | 
+                <<examplerefrence1>>
+                
+    post?:
+      description: This is used to create <<resourcePathName>> 
+      body:
+        application/json:
+          example: |
+            <<examplerefrence2>>
+      responses:
+        201:
+          body:
+            application/json:
+              example: |
+                <<examplerefrence3>>
+
+                
+                  
+                                        
+
+            
+
+                                 
